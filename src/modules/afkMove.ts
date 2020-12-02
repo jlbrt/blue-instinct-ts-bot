@@ -4,8 +4,8 @@ import logger from '../utils/logger';
 
 export const registerAfkMove = () => {
   const moveAfkClients = async () => {
-    // TODO 10 is not the actual afk channel
-    const afkChannelCid = '10';
+    const ignoredChannels = ['10', '11', '59', '60', '61'];
+    const afkChannelCid = '60';
     const maxAfkTime = 45 * 60 * 1000;
 
     const clients = await teamspeak.clientList({
@@ -13,12 +13,13 @@ export const registerAfkMove = () => {
     });
 
     clients.forEach(async (client) => {
-      if (client.idleTime > maxAfkTime && client.cid !== afkChannelCid) {
-        await client.move(afkChannelCid);
-        client.message(
-          '😴 Ich habe dich in den AFK Channel verschoben, weil du schon länger als 45 Minuten AFK bist.'
-        );
-      }
+      if (ignoredChannels.includes(client.cid)) return;
+      if (client.idleTime < maxAfkTime) return;
+
+      await client.move(afkChannelCid);
+      client.message(
+        '😴 Ich habe dich in den AFK Channel verschoben, weil du schon länger als 45 Minuten AFK bist.'
+      );
     });
   };
 

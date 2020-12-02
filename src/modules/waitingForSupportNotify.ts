@@ -1,28 +1,44 @@
 import { ClientType } from 'ts3-nodejs-library';
 import { ClientMoved } from 'ts3-nodejs-library/lib/types/Events';
-import { isAdmin } from '../helpers';
+import { isAdmin, isModerator } from '../helpers';
 import teamspeak from '../teamspeakConnection';
 import logger from '../utils/logger';
 
 const notifyOnWaitingForSupport = async (event: ClientMoved) => {
   try {
     const waitingForSupportChannelCid = '10';
+    const waitingForAdminChannelCid = '11';
 
     if (
-      event.channel.cid !== waitingForSupportChannelCid ||
-      isAdmin(event.client)
+      ![waitingForSupportChannelCid, waitingForAdminChannelCid].includes(
+        event.channel.cid
+      )
     ) {
       return;
     }
 
+    if (isAdmin(event.client) || isModerator(event.client)) return;
+
     const clients = await teamspeak.clientList({
       clientType: ClientType.Regular,
     });
-    const adminClients = clients.filter(isAdmin);
 
-    adminClients.forEach((adminClient) => {
-      adminClient.message(
-        `✋ ${event.client.nickname} wartet auf einen Supporter.`
+    const clientsToNotify = clients.filter((client) => {
+      if (event.channel.cid === waitingForSupportChannelCid) {
+        return isAdmin(client) || isModerator(client);
+      }
+
+      if (event.channel.cid === waitingForAdminChannelCid) {
+        return isAdmin(client);
+      }
+    });
+
+    clientsToNotify.forEach((clientToNotify) => {
+      const waitingFor =
+        event.channel.cid === waitingForAdminChannelCid ? 'Admin' : 'Supporter';
+
+      clientToNotify.message(
+        `✋ ${event.client.nickname} wartet auf einen ${waitingFor}.`
       );
     });
   } catch (err) {
