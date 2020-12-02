@@ -35,7 +35,7 @@ const notifyOnWaitingForSupport = async (event: ClientMoved) => {
 
     clientsToNotify.forEach((clientToNotify) => {
       const waitingFor =
-        event.channel.cid === waitingForAdminChannelCid ? 'Admin' : 'Supporter';
+        event.channel.cid === waitingForAdminChannelCid ? 'Admin' : 'Moderator';
 
       clientToNotify.message(
         `✋ ${event.client.nickname} wartet auf einen ${waitingFor}.`
