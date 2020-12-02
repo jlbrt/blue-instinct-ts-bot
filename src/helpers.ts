@@ -5,3 +5,9 @@ export const isAdmin = (client: TeamSpeakClient) => {
 
   return client.servergroups.includes(adminGroupId);
 };
+
+export const isModerator = (client: TeamSpeakClient) => {
+  const adminGroupId = '9';
+
+  return client.servergroups.includes(adminGroupId);
+};
