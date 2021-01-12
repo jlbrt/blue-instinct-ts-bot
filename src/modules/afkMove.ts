@@ -16,10 +16,7 @@ export const registerAfkMove = () => {
       if (ignoredChannels.includes(client.cid)) return;
       if (client.idleTime < maxAfkTime) return;
 
-      await client.move(afkChannelCid);
-      client.message(
-        '😴 Ich habe dich in den AFK Channel verschoben, weil du schon länger als 45 Minuten AFK bist.'
-      );
+      client.move(afkChannelCid);
     });
   };
 
