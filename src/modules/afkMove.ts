@@ -4,7 +4,8 @@ import logger from '../utils/logger';
 
 export const registerAfkMove = () => {
   const moveAfkClients = async () => {
-    const ignoredChannels = ['10', '11', '59', '60', '61'];
+    const phasmophobiaCid = '73';
+    const ignoredChannels = ['10', '11', '59', '60', '61', phasmophobiaCid];
     const afkChannelCid = '60';
     const maxAfkTime = 45 * 60 * 1000;
 
