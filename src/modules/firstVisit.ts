@@ -29,19 +29,6 @@ async function notifyOnFirstVisit(event: ClientConnect) {
 
     const message = `Hey ${event.client.nickname}! Sieht so aus, als wärst du das erste mal auf unserem Teamspeak Server. Wenn du dich für die Community bewerben möchtest, schau doch mal auf [URL=https://blueinstinct.de/]unserer Webseite[/URL] vorbei. Solltest du vorher noch Fragen haben, gehe einfach in den Channel [URL=channelid://10]╚● Warte auf Moderator[/URL].`;
     event.client.message(message);
-
-    const connectedClients = await teamspeak.clientList({
-      clientType: ClientType.Regular,
-    });
-    const clientsToNotify = connectedClients.filter((client) => {
-      return isAdmin(client) || isModerator(client);
-    });
-
-    clientsToNotify.forEach((clientToNotify) => {
-      clientToNotify.message(
-        `[URL=client://${event.client.clid}/${event.client.uniqueIdentifier}]${event.client.nickname}[/URL] ist zum ersten Mal auf dem Teamspeak Server. Ich habe ihm diese Nachricht geschickt:\n"${message}"`
-      );
-    });
   } catch (err) {
     logger.log('Error in FirstVisit module', err);
   }
